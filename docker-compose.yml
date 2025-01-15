@@ -1,0 +1,39 @@
+services:
+  etl:
+    build:
+      context: ./etl  # Path to the ETL Dockerfile
+    container_name: etl_service
+    volumes:
+      - ./etl/Data:/app/Data  # Mount local data directory to the container
+    depends_on:
+      - db  # Ensures the database is up before ETL starts
+    environment:
+      - SERVER=LAPTOP-AAS7RBMP  # Database server
+      - DATABASE=EcomerceDB  # Database name
+
+  app:
+    build:
+      context: ./app  # Path to the Streamlit app Dockerfile
+    container_name: streamlit_app
+    ports:
+      - "8501:8501"  # Expose the Streamlit app on localhost
+    depends_on:
+      - db  # Ensure the database is available before starting the app
+    environment:
+      - SERVER=LAPTOP-AAS7RBMP  # Database server
+      - DATABASE=EcomerceDB  # Database name
+
+  db:
+    image: postgres:13  # PostgreSQL database
+    container_name: db
+    environment:
+      POSTGRES_USER: user  # PostgreSQL username
+      POSTGRES_PASSWORD: password  # PostgreSQL password
+      POSTGRES_DB: ecomerce  # PostgreSQL database name
+    ports:
+      - "5432:5432"  # Expose PostgreSQL on localhost
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+
+volumes:
+  postgres_data:
