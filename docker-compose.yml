@@ -11,6 +11,7 @@ services:
       - SERVER=LAPTOP-AAS7RBMP  # Database server
       - DATABASE=EcomerceDB  # Database name
 
+
   app:
     build:
       context: ./app  # Path to the Streamlit app Dockerfile
